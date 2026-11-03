@@ -14,7 +14,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     body {
-      background: #0d0f14;
+      background: #0b0d13;
       color: #fff;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
@@ -27,18 +27,18 @@
     }
     header {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       text-align: center;
       padding: 10px;
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid rgba(255, 77, 109, 0.3);
     }
     .badge {
       display: inline-block;
       background: #ff4d6d;
       color: #fff;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 800;
       padding: 3px 10px;
       border-radius: 20px;
@@ -52,30 +52,60 @@
       50% { opacity: 0.7; transform: scale(1.04); }
     }
     h1 {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       color: #ffe66d;
     }
 
-    /* Khung quét Scanner */
+    /* Khung Camera & Quét Laze */
     .scanner-box {
       position: relative;
       width: 100%;
-      max-width: 340px;
+      max-width: 330px;
       aspect-ratio: 1 / 1;
-      border: 3px dashed #48cae4;
-      border-radius: 24px;
+      border: 3px solid #48cae4;
+      border-radius: 28px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, rgba(72, 202, 228, 0.05) 0%, rgba(0,0,0,0.8) 100%);
-      overflow: hidden;
-      box-shadow: 0 0 30px rgba(72, 202, 228, 0.2);
+      background: #000;
+      box-shadow: 0 0 25px rgba(72, 202, 228, 0.3);
     }
     .scanner-box.scanning {
       border-color: #ff4d6d;
-      box-shadow: 0 0 40px rgba(255, 77, 109, 0.4);
+      box-shadow: 0 0 35px rgba(255, 77, 109, 0.5);
     }
+
+    /* Video Camera thật */
+    #webcamVideo {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1); /* Lật gương cho tự nhiên như soi gương */
+      display: none;
+    }
+
+    /* Khung ngắm khuôn mặt */
+    .target-guide {
+      position: absolute;
+      width: 190px;
+      height: 230px;
+      border: 2px dashed rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .target-guide.locked {
+      border-color: #ff4d6d;
+      border-style: solid;
+      box-shadow: 0 0 20px #ff4d6d;
+    }
+
+    /* Tia Laser Quét */
     .laser-line {
       display: none;
       position: absolute;
@@ -84,61 +114,41 @@
       background: #ff4d6d;
       box-shadow: 0 0 16px #ff4d6d, 0 0 30px #ff4d6d;
       top: 0;
-      animation: scanLaser 1.5s ease-in-out infinite alternate;
+      z-index: 10;
+      animation: scanLaser 1.4s ease-in-out infinite alternate;
     }
     @keyframes scanLaser {
       0% { top: 5%; }
       100% { top: 92%; }
     }
-    .target-circle {
-      width: 170px;
-      height: 170px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
+
+    .placeholder-view {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      font-size: 4rem;
-      position: relative;
-    }
-    .crosshair {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border-top: 2px solid #ffd166;
-      border-bottom: 2px solid #ffd166;
-      animation: spinCross 4s linear infinite;
-    }
-    @keyframes spinCross {
-      100% { transform: rotate(360deg); }
-    }
-    .scan-status {
-      margin-top: 14px;
-      font-size: 0.9rem;
-      font-weight: 600;
       color: #a0aec0;
+      text-align: center;
+      padding: 20px;
     }
 
-    /* Đồng hồ đo lực hút */
+    /* Đồng hồ đo lực */
     .gauge-card {
       width: 100%;
       max-width: 360px;
-      background: #181d27;
+      background: #161b24;
       border-radius: 14px;
-      padding: 12px 16px;
+      padding: 12px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .gauge-title {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: #cbd5e0;
     }
     .gauge-value {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 900;
       color: #06d6a0;
     }
@@ -152,7 +162,7 @@
       75% { transform: translate(2px, -1px); }
     }
 
-    /* Modal Kết Quả Chẩn Đoán */
+    /* Modal Kết Quả Báo Động */
     .result-modal {
       position: fixed;
       inset: 0;
@@ -171,28 +181,28 @@
       pointer-events: auto;
     }
     .modal-box {
-      background: #202736;
+      background: #1f2735;
       border: 2px solid #ffd166;
       border-radius: 20px;
-      padding: 24px 18px;
+      padding: 22px 16px;
       width: 100%;
       max-width: 340px;
       text-align: center;
       box-shadow: 0 10px 40px rgba(255, 209, 102, 0.3);
     }
     .modal-box h2 {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       color: #ff4d6d;
       margin-bottom: 12px;
     }
     .alert-card {
-      background: #10141d;
+      background: #11151e;
       border-radius: 12px;
       padding: 12px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       line-height: 1.6;
       color: #e2e8f0;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       text-align: left;
     }
     .penalty-box {
@@ -200,7 +210,7 @@
       border: 1px dashed #ffd166;
       padding: 10px;
       border-radius: 10px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       color: #ffd166;
       font-weight: bold;
       margin-bottom: 16px;
@@ -239,12 +249,18 @@
   </header>
 
   <div class="scanner-box" id="scanBox">
-    <div class="laser-line" id="laser"></div>
-    <div class="target-circle">
-      <div class="crosshair"></div>
-      <span id="faceIcon">👧</span>
+    <!-- Luồng Video Camera -->
+    <video id="webcamVideo" autoplay playsinline muted></video>
+
+    <!-- Màn hình chờ khi chưa bật cam -->
+    <div class="placeholder-view" id="placeholderView">
+      <div style="font-size: 3.5rem; margin-bottom: 8px;">📷</div>
+      <p style="font-size: 0.85rem;">Bấm nút bên dưới và chọn <b>Cho phép</b> để bật camera soi mặt đối tượng Sữa!</p>
     </div>
-    <div class="scan-status" id="scanStatus">Đưa mặt đối tượng Sữa vào khung quét...</div>
+
+    <!-- Khung tiêu cự & Tia Laser -->
+    <div class="target-guide" id="targetGuide" style="display: none;"></div>
+    <div class="laser-line" id="laser"></div>
   </div>
 
   <div class="gauge-card">
@@ -252,4 +268,110 @@
     <div class="gauge-value" id="gaugeVal">0 PSI</div>
   </div>
 
-  <button class="btn-action" id="btnScan" onclick="startScan()">BẮT ĐẦU QUÉT
+  <button class="btn-action" id="btnScan" onclick="handleScanButton()">BẬT CAMERA & QUÉT MẶT SỮA ⚡</button>
+
+  <!-- Modal Báo Động -->
+  <div class="result-modal" id="resultModal">
+    <div class="modal-box">
+      <h2>🚨 CẢNH BÁO MỨC ĐỘ ĐỎ!</h2>
+      <div class="alert-card">
+        • <b>Đối tượng:</b> Em Sữa (Kính hồng buộc tóc 2 bên)<br>
+        • <b>Hành vi:</b> Hút sữa Milo với nội lực <b>9999 PSI</b> làm xẹp lép cả vỏ hộp giấy!<br>
+        • <b>Tình trạng:</b> Hộp sữa đã hết sạch nhưng nội lực hút quá mạnh làm méo cả hộp.
+      </div>
+
+      <div class="penalty-box">
+        ⚖️ HÌNH PHẠT: Phải cười thật to và thơm bố 3 cái thì mới được tắt còi hú!
+      </div>
+
+      <button class="btn-action ok" onclick="dismissAlarm()">Chấp Nhận Phạt (Tắt Còi) 🌸</button>
+    </div>
+  </div>
+
+  <script>
+    /* ================= Web Audio API ================= */
+    let audioCtx = null;
+    let alarmInterval = null;
+
+    function getAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playBeep(freq = 600, duration = 0.08) {
+      const ctx = getAudio();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    }
+
+    function startAlarmSound() {
+      const ctx = getAudio();
+      let high = false;
+      alarmInterval = setInterval(() => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(high ? 950 : 650, ctx.currentTime);
+        gain.gain.setValueAtTime(0.35, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.28);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+        high = !high;
+      }, 320);
+    }
+
+    function stopAlarmSound() {
+      if (alarmInterval) {
+        clearInterval(alarmInterval);
+        alarmInterval = null;
+      }
+    }
+
+    /* ================= Khởi Động Camera Thật ================= */
+    let videoStream = null;
+    let isCameraReady = false;
+    let isScanning = false;
+
+    async function initCamera() {
+      try {
+        const constraints = {
+          video: {
+            facingMode: 'user', // Ưu tiên camera trước để soi mặt
+            width: { ideal: 640 },
+            height: { ideal: 640 }
+          },
+          audio: false
+        };
+        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        const videoEl = document.getElementById('webcamVideo');
+        videoEl.srcObject = videoStream;
+        videoEl.style.display = 'block';
+        document.getElementById('placeholderView').style.display = 'none';
+        document.getElementById('targetGuide').style.display = 'flex';
+        isCameraReady = true;
+        return true;
+      } catch (err) {
+        console.error(err);
+        alert('Vui lòng bấm Cho Phép (Allow) truy cập Camera để soi mặt em Sữa nhé!');
+        return false;
+      }
+    }
+
+    /* ================= Bắt Đầu Quét ================= */
+    async function handleScanButton() {
+      getAudio();
+      if (!isCameraReady) {
+        const ok = await initCamera();
+        if (!ok) return;
+        

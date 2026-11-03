@@ -5,51 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Máy Quét Milo - Sữa</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
     body {
       background: #090b10;
       color: #fff;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 12px 14px 24px;
+      justify-content: space-around;
+      padding: 10px 14px 16px;
+      overflow: hidden;
     }
     header {
       text-align: center;
-      padding: 8px 12px;
-      background: rgba(255,255,255,0.05);
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
-      border: 1px solid rgba(255,77,109,0.3);
+      border: 1px solid rgba(255, 77, 109, 0.3);
       width: 100%;
-      max-width: 360px;
+      max-width: 340px;
     }
     .badge {
       display: inline-block;
       background: #ff4d6d;
       color: #fff;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       padding: 2px 8px;
-      border-radius: 12px;
+      border-radius: 10px;
       margin-bottom: 2px;
     }
-    h1 { font-size: 1.05rem; color: #ffe66d; }
+    h1 {
+      font-size: 0.95rem;
+      color: #ffe66d;
+    }
+
+    /* Khung Camera gọn gàng */
     .scanner-box {
       position: relative;
-      width: 100%;
-      max-width: 320px;
-      aspect-ratio: 1 / 1;
+      width: 250px;
+      height: 250px;
       border: 3px solid #48cae4;
-      border-radius: 24px;
+      border-radius: 20px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #000;
-      box-shadow: 0 0 20px rgba(72,202,228,0.3);
+      box-shadow: 0 0 20px rgba(72, 202, 228, 0.3);
+      cursor: pointer;
+    }
+    .scanner-box.scanning {
+      border-color: #ff4d6d;
+      box-shadow: 0 0 30px rgba(255, 77, 109, 0.5);
     }
     #webcamVideo {
       position: absolute;
@@ -68,19 +83,20 @@
       box-shadow: 0 0 16px #ff4d6d;
       top: 0;
       z-index: 10;
-      animation: scanLaser 1.3s ease-in-out infinite alternate;
+      animation: scanLaser 1.2s ease-in-out infinite alternate;
     }
     @keyframes scanLaser {
-      0% { top: 5%; }
+      0% { top: 6%; }
       100% { top: 92%; }
     }
     .target-guide {
       position: absolute;
-      width: 180px;
-      height: 220px;
-      border: 2px dashed rgba(255,255,255,0.6);
+      width: 160px;
+      height: 200px;
+      border: 2px dashed rgba(255, 255, 255, 0.6);
       border-radius: 50%;
       pointer-events: none;
+      display: none;
     }
     .placeholder-view {
       display: flex;
@@ -88,42 +104,49 @@
       align-items: center;
       color: #cbd5e0;
       text-align: center;
-      padding: 16px;
+      padding: 10px;
     }
+
     .gauge-card {
       width: 100%;
-      max-width: 340px;
+      max-width: 320px;
       background: #141822;
       border-radius: 12px;
-      padding: 10px 16px;
+      padding: 8px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .gauge-value {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 900;
       color: #06d6a0;
     }
-    .gauge-value.danger { color: #ff4d6d; }
+    .gauge-value.danger {
+      color: #ff4d6d;
+    }
+
+    /* Nút bấm luôn hiển thị rõ ràng */
     .btn-action {
       width: 100%;
-      max-width: 340px;
-      padding: 15px;
+      max-width: 320px;
+      padding: 13px;
       background: linear-gradient(135deg, #ff4d6d, #d90429);
       border: none;
       border-radius: 14px;
       color: #fff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 6px 18px rgba(217,4,41,0.4);
+      box-shadow: 0 4px 16px rgba(217, 4, 41, 0.4);
     }
+
+    /* Modal Báo Động */
     .result-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0, 0, 0, 0.9);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -133,32 +156,35 @@
       pointer-events: none;
       transition: opacity 0.3s;
     }
-    .result-modal.active { opacity: 1; pointer-events: auto; }
+    .result-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
     .modal-box {
       background: #1c2230;
       border: 2px solid #ffd166;
       border-radius: 20px;
-      padding: 22px 16px;
+      padding: 20px 16px;
       width: 100%;
-      max-width: 330px;
+      max-width: 320px;
       text-align: center;
     }
     .alert-card {
       background: #0f131c;
       border-radius: 12px;
       padding: 12px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       line-height: 1.6;
       color: #e2e8f0;
       margin: 12px 0;
       text-align: left;
     }
     .penalty-box {
-      background: rgba(255,209,102,0.15);
+      background: rgba(255, 209, 102, 0.15);
       border: 1px dashed #ffd166;
-      padding: 10px;
+      padding: 8px;
       border-radius: 10px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: #ffd166;
       font-weight: bold;
       margin-bottom: 14px;
@@ -172,18 +198,19 @@
     <h1>MÁY QUÉT ÁP SUẤT HÚT SỮA 🧃</h1>
   </header>
 
-  <div class="scanner-box" id="scanBox">
+  <!-- Chạm vào đây cũng bật được camera -->
+  <div class="scanner-box" id="scanBox" onclick="handleScan()">
     <video id="webcamVideo" autoplay playsinline muted></video>
     <div class="placeholder-view" id="placeholderView">
-      <div style="font-size: 3rem; margin-bottom: 8px;">📷</div>
-      <p style="font-size: 0.82rem;">Bấm nút đỏ bên dưới để bật camera soi mặt em Sữa!</p>
+      <div style="font-size: 2.8rem; margin-bottom: 6px;">📷</div>
+      <p style="font-size: 0.8rem; color:#ffd166; font-weight:600;">CHẠM VÀO ĐÂY ĐỂ BẬT CAMERA</p>
     </div>
-    <div class="target-guide" id="targetGuide" style="display: none;"></div>
+    <div class="target-guide" id="targetGuide"></div>
     <div class="laser-line" id="laser"></div>
   </div>
 
   <div class="gauge-card">
-    <span style="font-size: 0.82rem; color: #a0aec0;">Nội lực đo được:</span>
+    <span style="font-size: 0.8rem; color: #a0aec0;">Nội lực đo được:</span>
     <span class="gauge-value" id="gaugeVal">0 PSI</span>
   </div>
 
@@ -191,11 +218,11 @@
 
   <div class="result-modal" id="resultModal">
     <div class="modal-box">
-      <h2 style="color: #ff4d6d; font-size: 1.3rem;">🚨 BÁO ĐỘNG ĐỎ!</h2>
+      <h2 style="color: #ff4d6d; font-size: 1.25rem;">🚨 BÁO ĐỘNG ĐỎ!</h2>
       <div class="alert-card">
         • <b>Đối tượng:</b> Em Sữa (Kính hồng buộc tóc 2 bên)<br>
-        • <b>Hành vi:</b> Hút sữa Milo với nội lực <b>9999 PSI</b> làm bẹp dúm vỏ hộp!<br>
-        • <b>Tình trạng:</b> Hộp sữa đã cạn sạch nhưng vẫn tiếp tục hút.
+        • <b>Hành vi:</b> Hút sữa Milo nội lực <b>9999 PSI</b> làm bẹp dúm vỏ hộp!<br>
+        • <b>Tình trạng:</b> Hộp sữa đã cạn sạch từ lâu nhưng vẫn cố hút nốt.
       </div>
       <div class="penalty-box">
         ⚖️ HÌNH PHẠT: Cười thật tươi và thơm bố 3 cái mới được tắt còi!
@@ -218,7 +245,7 @@
       const g = c.createGain();
       o.connect(g); g.connect(c.destination);
       o.frequency.setValueAtTime(f, c.currentTime);
-      g.gain.setValueAtTime(0.25, c.currentTime);
+      g.gain.setValueAtTime(0.2, c.currentTime);
       g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.08);
       o.start(); o.stop(c.currentTime + 0.09);
     }
@@ -230,7 +257,7 @@
         const g = c.createGain();
         o.type = 'sawtooth';
         o.frequency.setValueAtTime(hi ? 950 : 650, c.currentTime);
-        g.gain.setValueAtTime(0.35, c.currentTime);
+        g.gain.setValueAtTime(0.3, c.currentTime);
         g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.28);
         o.connect(g); g.connect(c.destination);
         o.start(); o.stop(c.currentTime + 0.3);
@@ -245,7 +272,7 @@
       if (!isCam) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } },
+            video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 } },
             audio: false
           });
           const v = document.getElementById('webcamVideo');
@@ -256,7 +283,7 @@
           isCam = true;
           document.getElementById('btnScan').innerText = "BẮT ĐẦU QUÉT LỰC HÚT ⚡";
         } catch (e) {
-          alert("Anh nhớ bấm 'Cho phép' khi trình duyệt hỏi quyền Camera nhé!");
+          alert("Nhớ chọn 'Cho phép' khi trình duyệt hỏi quyền Camera nhé!");
         }
         return;
       }
@@ -274,7 +301,7 @@
       let count = 0;
       const t = setInterval(() => {
         count++;
-        p += 550;
+        p += 650;
         gauge.innerText = p + " PSI";
         playBeep(450 + count * 80);
         if (count >= 10) {
